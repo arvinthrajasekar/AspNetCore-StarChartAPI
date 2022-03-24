@@ -22,7 +22,7 @@ namespace StarChart.Controllers
             {
                 return NotFound();
             }
-            selectedId.Satellites = _context.CelestialObjects.FirstOrDefault(p => p.Id == OrbitedObjectId);
+            selectedId.Satellites = _context.CelestialObjects.Select(s=> s.OrbitedObjectId );
                 return Ok(selectedId);
        
         }

@@ -22,25 +22,34 @@ namespace StarChart.Controllers
             {
                 return NotFound();
             }
-           // selectedId.Satellites = _context.CelestialObjects.Select(s=> s.OrbitedObjectId);
+            selectedId.Satellites = _context.CelestialObjects.Where(s=> s.OrbitedObjectId== id).ToList();
                 return Ok(selectedId);
        
         }
         [HttpGet("{name}")]
         public IActionResult GetByName(string name)
         {
-            var selectedName = _context.CelestialObjects.FirstOrDefault(p => p.Name == name);
-            if(selectedName == null)
+            var selectedName = _context.CelestialObjects.Where(p => p.Name == name).ToList();
+            if(!selectedName.Any())
             {
                 return NotFound();
             }
-            selectedName.Satellites.ForEach(s => s.Name = name);
+            foreach (var celestialObject in selectedName)
+            {
+                celestialObject.Satellites = _context.CelestialObjects.Where(s => s.OrbitedObjectId == celestialObject.Id).ToList();
+            }
+            
             return Ok(selectedName);
         }
         [HttpGet]
         public IActionResult GetAll()
         {
-            
+            var celestialobject = _context.CelestialObjects.ToList();
+            foreach (var celestialObject in celestialobject)
+            {
+                celestialObject.Satellites = _context.CelestialObjects.Where(s => s.OrbitedObjectId == celestialObject.Id).ToList();
+            }
+
             return Ok(_context.CelestialObjects);
         } 
        
